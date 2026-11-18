@@ -239,7 +239,8 @@ jobs:
                   if not out["ok"] and "tail" not in out:
                       out["tail"] = logtxt[-3000:]
               except Exception as e:
-                  out["ok"], out["error"] = False, repr(e)[:500]
+                  # keep the real reason (e.g. the memory stop) when a later step fails because of it
+                  out["ok"], out["error"] = False, ((out["error"] + "; then ") if out.get("error") else "") + repr(e)[:400]
                   if os.path.exists("out/r/log.txt"):
                       out["tail"] = open("out/r/log.txt", errors="replace").read()[-3000:]
               if os.path.exists("out/r/body_half.stl"):
